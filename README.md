@@ -13,3 +13,5 @@ pip install pycryptodomex
 1. Make a new file called `ids.txt` and put the vanity URLs you want to target. Maximum of 100.
 2. Put your Steam username and password in `user.json`, alongside your API key from [here](https://steamcommunity.com/dev/apikey)
 3. Open terminal in your program's directory, and type `py app.py` to start it.
+
+S/o to /summer on Github for their source from a while ago. It helped a lot with the cryptographic portion of the login.
