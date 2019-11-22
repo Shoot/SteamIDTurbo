@@ -102,8 +102,8 @@ class Turbo:
 			'Revoke': 'Revoke My Steam Web API Key',
 			'sessionid': self.session.cookies['sessionid']
 		}
-        
-        # Revoke the old Steam API key
+		
+		# Revoke the old Steam API key
 		self.session.post('https://steamcommunity.com/dev/revokekey', data=payload)
 
 		payload = {
@@ -112,8 +112,8 @@ class Turbo:
 			'sessionid': self.session.cookies['sessionid'],
 			'Submit': 'Register'
 		}
-        
-        # Sign up for a new one, then parse the response text to get the key
+		
+		# Sign up for a new one, then parse the response text to get the key
 		resp = self.session.post('https://steamcommunity.com/dev/registerkey', data=payload)
 		self.apikey = resp.text.split('<p>Key: ')[-1].split('</p>')[0]
 		log.info("Got a new API key: " + self.apikey)
@@ -129,18 +129,18 @@ class Turbo:
 
 		steam64_list = []
 
-        # Convert each vanity to SteamID64 format
+		# Convert each vanity to SteamID64 format
 		for vanity in list:
 			payload = {
 				'key': self.apikey,
 				'vanityurl': vanity
 			}
-            
-            # Get the owner's information
+			
+			# Get the owner's information
 			resp = requests.get('http://api.steampowered.com/ISteamUser/ResolveVanityUrl/v0001/', params=payload)
 			steam_user = resp.json()
 
-            # Append it to the array
+			# Append it to the array
 			steam64_list.append(steam_user['response']['steamid'])
 
 		log.info("Converted " + str(len(steam64_list)) + " vanity URLs")
@@ -155,22 +155,22 @@ class Turbo:
 		if not self.apikey:
 			return False
 
-        # Get the users who own the vanity URLs
+		# Get the users who own the vanity URLs
 		resp = self.session.get('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + self.apikey + '&steamids=' + ','.join(s64list))
 		
-        # Handle some possible issues
+		# Handle some possible issues
 		if resp.status_code != 200:
 			return False
 		if not resp.json().get('response'):
 			return False
 		if not resp.json()["response"].get("players"):
 			return False
-        
-        # Check if the vanity URL is not longer present
+		
+		# Check if the vanity URL is not longer present
 		for vanity in vanitylist:
-            if not 'steamcommunity.com/id/' + vanity + '/' in resp.text.lower():
-                log.info("Got a target: " + vanity)
-                return vanity
+			if not 'steamcommunity.com/id/' + vanity + '/' in resp.text.lower():
+				log.info("Got a target: " + vanity)
+				return vanity
 
 	def claim(self, vanity):
 		""" Attempt to claim the vanity URL
@@ -183,7 +183,7 @@ class Turbo:
 			'customURL': vanity
 		}
 
-        # Attempt to change our Steam vanity URL
+		# Attempt to change our Steam vanity URL
 		self.session.get('https://steamcommunity.com/my/edit/', params=payload)
 		resp = self.session.get('https://steamcommunity.com/my/edit')
 		
